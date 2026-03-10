@@ -3,6 +3,8 @@ export const label = "Pi (local)";
 
 export const models: Array<{ id: string; label: string }> = [];
 
+export { DEFAULT_PROVIDER, DEFAULT_MODEL } from "./model/llm.js";
+
 export const agentConfigurationDoc = `# pi_local agent configuration
 
 Adapter: pi_local
@@ -22,7 +24,7 @@ Core fields:
 - cwd (string, optional): default absolute working directory fallback for the agent process (created if missing when possible)
 - instructionsFilePath (string, optional): absolute path to a markdown instructions file appended to system prompt via --append-system-prompt
 - promptTemplate (string, optional): user prompt template passed via -p flag
-- model (string, required): Pi model id in provider/model format (for example xai/grok-4)
+- model (string, optional): Pi model id in provider/model format (for example xai/grok-4). Defaults to anthropic/claude-sonnet-4-5-20250929.
 - thinking (string, optional): thinking level (off, minimal, low, medium, high, xhigh)
 - command (string, optional): defaults to "pi"
 - env (object, optional): KEY=VALUE environment variables
@@ -33,7 +35,7 @@ Operational fields:
 
 Notes:
 - Pi supports multiple providers and models. Use \`pi --list-models\` to list available options.
-- Paperclip requires an explicit \`model\` value for \`pi_local\` agents.
+- If \`model\` is omitted, Paperclip defaults to anthropic/claude-sonnet-4-5-20250929 and auto-injects ANTHROPIC_API_KEY from the macOS keychain (Claude Code credentials).
 - Sessions are stored in ~/.pi/paperclips/ and resumed with --session.
 - All tools (read, bash, edit, write, grep, find, ls) are enabled by default.
 - Agent instructions are appended to Pi's system prompt via --append-system-prompt, while the user task is sent via -p.

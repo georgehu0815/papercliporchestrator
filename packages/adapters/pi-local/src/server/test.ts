@@ -16,6 +16,9 @@ import {
 } from "@paperclipai/adapter-utils/server-utils";
 import { discoverPiModelsCached } from "./models.js";
 import { parsePiJsonl } from "./parse.js";
+import { DEFAULT_PROVIDER, DEFAULT_MODEL } from "../model/llm.js";
+
+const DEFAULT_PI_MODEL = `${DEFAULT_PROVIDER}/${DEFAULT_MODEL}`;
 
 function summarizeStatus(checks: AdapterEnvironmentCheck[]): AdapterEnvironmentTestResult["status"] {
   if (checks.some((check) => check.level === "error")) return "fail";
@@ -140,15 +143,17 @@ export async function testEnvironment(
   }
 
   const configuredModel = asString(config.model, "").trim();
+  const effectiveModel = configuredModel || DEFAULT_PI_MODEL;
   if (!configuredModel) {
     checks.push({
-      code: "pi_model_required",
-      level: "error",
-      message: "Pi requires a configured model in provider/model format.",
-      hint: "Set adapterConfig.model using an ID from `pi --list-models`.",
+      code: "pi_model_using_default",
+      level: "info",
+      message: `No model configured; will use default: ${DEFAULT_PI_MODEL}`,
+      hint: "Set adapterConfig.model to override. Run `pi --list-models` for available options.",
     });
-  } else if (canRunProbe) {
-    // Verify model is in the list
+  }
+  if (canRunProbe && configuredModel) {
+    // Verify explicitly-configured model is in the list
     try {
       const discovered = await discoverPiModelsCached({ command, cwd, env: runtimeEnv });
       const modelExists = discovered.some((m: { id: string }) => m.id === configuredModel);
@@ -176,14 +181,14 @@ export async function testEnvironment(
     }
   }
 
-  if (canRunProbe && configuredModel) {
+  if (canRunProbe) {
     // Parse model for probe
-    const provider = configuredModel.includes("/") 
-      ? configuredModel.slice(0, configuredModel.indexOf("/")) 
+    const provider = effectiveModel.includes("/")
+      ? effectiveModel.slice(0, effectiveModel.indexOf("/"))
       : "";
-    const modelId = configuredModel.includes("/")
-      ? configuredModel.slice(configuredModel.indexOf("/") + 1)
-      : configuredModel;
+    const modelId = effectiveModel.includes("/")
+      ? effectiveModel.slice(effectiveModel.indexOf("/") + 1)
+      : effectiveModel;
     const thinking = asString(config.thinking, "").trim();
     const extraArgs = (() => {
       const fromExtraArgs = asStringArray(config.extraArgs);

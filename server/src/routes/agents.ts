@@ -38,12 +38,16 @@ import {
 } from "@paperclipai/adapter-codex-local";
 import { DEFAULT_CURSOR_LOCAL_MODEL } from "@paperclipai/adapter-cursor-local";
 import { ensureOpenCodeModelConfiguredAndAvailable } from "@paperclipai/adapter-opencode-local/server";
+import { DEFAULT_PROVIDER as PI_DEFAULT_PROVIDER, DEFAULT_MODEL as PI_DEFAULT_MODEL } from "@paperclipai/adapter-pi-local";
+
+const DEFAULT_PI_LOCAL_MODEL = `${PI_DEFAULT_PROVIDER}/${PI_DEFAULT_MODEL}`;
 
 export function agentRoutes(db: Db) {
   const DEFAULT_INSTRUCTIONS_PATH_KEYS: Record<string, string> = {
     claude_local: "instructionsFilePath",
     codex_local: "instructionsFilePath",
     opencode_local: "instructionsFilePath",
+    pi_local: "instructionsFilePath",
     cursor: "instructionsFilePath",
   };
   const KNOWN_INSTRUCTIONS_PATH_KEYS = new Set(["instructionsFilePath", "agentsMdPath"]);
@@ -235,6 +239,9 @@ export function agentRoutes(db: Db) {
     // OpenCode requires explicit model selection — no default
     if (adapterType === "cursor" && !asNonEmptyString(next.model)) {
       next.model = DEFAULT_CURSOR_LOCAL_MODEL;
+    }
+    if (adapterType === "pi_local" && !asNonEmptyString(next.model)) {
+      next.model = DEFAULT_PI_LOCAL_MODEL;
     }
     return ensureGatewayDeviceKey(adapterType, next);
   }

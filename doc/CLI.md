@@ -12,12 +12,60 @@ Use repo script in development:
 ```sh
 pnpm paperclipai --help
 ```
+node cli/node_modules/tsx/dist/cli.mjs cli/src/index.ts "--help"
+
+Usage: paperclipai [options] [command]
+
+Paperclip CLI — setup, diagnose, and configure your instance
+
+Options:
+  -V, --version                      output the version number
+  -h, --help                         display help for command
+
+Commands:
+  onboard [options]                  Interactive first-run setup wizard
+  doctor|--fix [options]             Run diagnostic checks on your Paperclip setup
+  env [options]                      Print environment variables for deployment
+  configure [options]                Update configuration sections
+  db:backup [options]                Create a one-off database backup using current config
+  allowed-hostname [options] <host>  Allow a hostname for authenticated/private mode access
+  run [options]                      Bootstrap local setup (onboard + doctor) and run Paperclip
+  heartbeat                          Heartbeat utilities
+  context                            Manage CLI client context profiles
+  company                            Company operations
+  issue                              Issue operations
+  agent                              Agent operations
+  approval                           Approval operations
+  activity                           Activity log operations
+  dashboard                          Dashboard summary operations
+  auth                               Authentication and bootstrap utilities
+  help [command]                     display help for command
 
 First-time local bootstrap + run:
 
 ```sh
 pnpm paperclipai run
 ```
+Mode             embedded-postgres  |  vite-dev-middleware
+Deploy           local_trusted (private)
+Auth             ready
+Server           3100
+API              http://127.0.0.1:3100/api (health: http://127.0.0.1:3100/api/health)
+UI               http://127.0.0.1:3100
+Database         /Users/ghu/.paperclip/instances/default/db (pg:54329)
+Migrations       applied (pending migrations)
+Agent JWT        set
+Heartbeat        enabled (30000ms)
+DB Backup        enabled (every 60m, keep 30d)
+Backup Dir       /Users/ghu/.paperclip/instances/default/data/backups
+Config           /Users/ghu/.paperclip/instances/default/config.json
+  ───────────────────────────────────────────────────────
+
+[13:30:07] INFO: Automatic database backups enabled
+    intervalMinutes: 60
+    retentionDays: 30
+    backupDir: "/Users/ghu/.paperclip/instances/default/data/backups"
+[13:30:07] INFO: Server listening on 127.0.0.1:3100
 
 Choose local instance:
 
@@ -193,3 +241,25 @@ Supported providers:
 
 - `local_disk` (default; local single-user installs)
 - `s3` (S3-compatible object storage)
+
+
+  paperclip doctor 
+│
+│  ✓ Config file: Valid config at /Users/ghu/.paperclip/instances/default/config.json
+│
+│  ✓ Deployment/auth mode: local_trusted mode is configured for loopback-only access
+│
+│  ✓ Agent JWT secret: PAPERCLIP_AGENT_JWT_SECRET is set in environment
+│
+│  ✓ Secrets adapter: Local encrypted provider configured with key file /Users/ghu/.paperclip/instances/default/secrets/master.key
+│
+│  ✓ Storage: Local disk storage is writable: /Users/ghu/.paperclip/instances/default/data/storage
+│
+│  ✓ Database: Embedded PostgreSQL configured at /Users/ghu/.paperclip/instances/default/db (port 54329)
+│
+│  ✓ LLM provider: No LLM provider configured (optional)
+│
+│  ✓ Log directory: Log directory is writable: /Users/ghu/.paperclip/instances/default/logs
+│
+│  ✓ Server port: Port 3100 is available
+│

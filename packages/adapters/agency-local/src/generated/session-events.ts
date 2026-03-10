@@ -1,0 +1,722 @@
+/**
+ * AUTO-GENERATED FILE - DO NOT EDIT
+ * Generated from: session-events.schema.json
+ */
+
+export type SessionEvent =
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral?: boolean;
+      type: "session.start";
+      data: {
+        sessionId: string;
+        version: number;
+        producer: string;
+        copilotVersion: string;
+        startTime: string;
+        selectedModel?: string;
+        context?: {
+          cwd: string;
+          gitRoot?: string;
+          repository?: string;
+          branch?: string;
+        };
+      };
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral?: boolean;
+      type: "session.resume";
+      data: {
+        resumeTime: string;
+        eventCount: number;
+        context?: {
+          cwd: string;
+          gitRoot?: string;
+          repository?: string;
+          branch?: string;
+        };
+      };
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral?: boolean;
+      type: "session.error";
+      data: {
+        errorType: string;
+        message: string;
+        stack?: string;
+        statusCode?: number;
+        providerCallId?: string;
+      };
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral: true;
+      type: "session.idle";
+      data: {};
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral: true;
+      type: "session.title_changed";
+      data: {
+        title: string;
+      };
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral?: boolean;
+      type: "session.info";
+      data: {
+        infoType: string;
+        message: string;
+      };
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral?: boolean;
+      type: "session.warning";
+      data: {
+        warningType: string;
+        message: string;
+      };
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral?: boolean;
+      type: "session.model_change";
+      data: {
+        previousModel?: string;
+        newModel: string;
+      };
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral?: boolean;
+      type: "session.mode_changed";
+      data: {
+        previousMode: string;
+        newMode: string;
+      };
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral?: boolean;
+      type: "session.plan_changed";
+      data: {
+        operation: "create" | "update" | "delete";
+      };
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral?: boolean;
+      type: "session.workspace_file_changed";
+      data: {
+        /**
+         * Relative path within the workspace files directory
+         */
+        path: string;
+        operation: "create" | "update";
+      };
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral?: boolean;
+      type: "session.handoff";
+      data: {
+        handoffTime: string;
+        sourceType: "remote" | "local";
+        repository?: {
+          owner: string;
+          name: string;
+          branch?: string;
+        };
+        context?: string;
+        summary?: string;
+        remoteSessionId?: string;
+      };
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral?: boolean;
+      type: "session.truncation";
+      data: {
+        tokenLimit: number;
+        preTruncationTokensInMessages: number;
+        preTruncationMessagesLength: number;
+        postTruncationTokensInMessages: number;
+        postTruncationMessagesLength: number;
+        tokensRemovedDuringTruncation: number;
+        messagesRemovedDuringTruncation: number;
+        performedBy: string;
+      };
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral: true;
+      type: "session.snapshot_rewind";
+      data: {
+        upToEventId: string;
+        eventsRemoved: number;
+      };
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral: true;
+      type: "session.shutdown";
+      data: {
+        shutdownType: "routine" | "error";
+        errorReason?: string;
+        totalPremiumRequests: number;
+        totalApiDurationMs: number;
+        sessionStartTime: number;
+        codeChanges: {
+          linesAdded: number;
+          linesRemoved: number;
+          filesModified: string[];
+        };
+        modelMetrics: {
+          [k: string]: {
+            requests: {
+              count: number;
+              cost: number;
+            };
+            usage: {
+              inputTokens: number;
+              outputTokens: number;
+              cacheReadTokens: number;
+              cacheWriteTokens: number;
+            };
+          };
+        };
+        currentModel?: string;
+      };
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral?: boolean;
+      type: "session.context_changed";
+      data: {
+        cwd: string;
+        gitRoot?: string;
+        repository?: string;
+        branch?: string;
+      };
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral: true;
+      type: "session.usage_info";
+      data: {
+        tokenLimit: number;
+        currentTokens: number;
+        messagesLength: number;
+      };
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral?: boolean;
+      type: "session.compaction_start";
+      data: {};
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral?: boolean;
+      type: "session.compaction_complete";
+      data: {
+        success: boolean;
+        error?: string;
+        preCompactionTokens?: number;
+        postCompactionTokens?: number;
+        preCompactionMessagesLength?: number;
+        messagesRemoved?: number;
+        tokensRemoved?: number;
+        summaryContent?: string;
+        checkpointNumber?: number;
+        checkpointPath?: string;
+        compactionTokensUsed?: {
+          input: number;
+          output: number;
+          cachedInput: number;
+        };
+        requestId?: string;
+      };
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral?: boolean;
+      type: "session.task_complete";
+      data: {
+        summary?: string;
+      };
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral?: boolean;
+      type: "user.message";
+      data: {
+        content: string;
+        transformedContent?: string;
+        attachments?: (
+          | {
+              type: "file";
+              path: string;
+              displayName: string;
+              lineRange?: {
+                start: number;
+                end: number;
+              };
+            }
+          | {
+              type: "directory";
+              path: string;
+              displayName: string;
+              lineRange?: {
+                start: number;
+                end: number;
+              };
+            }
+          | {
+              type: "selection";
+              filePath: string;
+              displayName: string;
+              text: string;
+              selection: {
+                start: {
+                  line: number;
+                  character: number;
+                };
+                end: {
+                  line: number;
+                  character: number;
+                };
+              };
+            }
+        )[];
+        source?: string;
+        agentMode?: "interactive" | "plan" | "autopilot" | "shell";
+      };
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral: true;
+      type: "pending_messages.modified";
+      data: {};
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral?: boolean;
+      type: "assistant.turn_start";
+      data: {
+        turnId: string;
+      };
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral: true;
+      type: "assistant.intent";
+      data: {
+        intent: string;
+      };
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral?: boolean;
+      type: "assistant.reasoning";
+      data: {
+        reasoningId: string;
+        content: string;
+      };
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral: true;
+      type: "assistant.reasoning_delta";
+      data: {
+        reasoningId: string;
+        deltaContent: string;
+      };
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral: true;
+      type: "assistant.streaming_delta";
+      data: {
+        totalResponseSizeBytes: number;
+      };
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral?: boolean;
+      type: "assistant.message";
+      data: {
+        messageId: string;
+        content: string;
+        toolRequests?: {
+          toolCallId: string;
+          name: string;
+          arguments?: unknown;
+          type?: "function" | "custom";
+        }[];
+        reasoningOpaque?: string;
+        reasoningText?: string;
+        encryptedContent?: string;
+        phase?: string;
+        parentToolCallId?: string;
+      };
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral: true;
+      type: "assistant.message_delta";
+      data: {
+        messageId: string;
+        deltaContent: string;
+        parentToolCallId?: string;
+      };
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral?: boolean;
+      type: "assistant.turn_end";
+      data: {
+        turnId: string;
+      };
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral: true;
+      type: "assistant.usage";
+      data: {
+        model: string;
+        inputTokens?: number;
+        outputTokens?: number;
+        cacheReadTokens?: number;
+        cacheWriteTokens?: number;
+        cost?: number;
+        duration?: number;
+        initiator?: string;
+        apiCallId?: string;
+        providerCallId?: string;
+        parentToolCallId?: string;
+        quotaSnapshots?: {
+          [k: string]: {
+            isUnlimitedEntitlement: boolean;
+            entitlementRequests: number;
+            usedRequests: number;
+            usageAllowedWithExhaustedQuota: boolean;
+            overage: number;
+            overageAllowedWithExhaustedQuota: boolean;
+            remainingPercentage: number;
+            resetDate?: string;
+          };
+        };
+      };
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral?: boolean;
+      type: "abort";
+      data: {
+        reason: string;
+      };
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral?: boolean;
+      type: "tool.user_requested";
+      data: {
+        toolCallId: string;
+        toolName: string;
+        arguments?: unknown;
+      };
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral?: boolean;
+      type: "tool.execution_start";
+      data: {
+        toolCallId: string;
+        toolName: string;
+        arguments?: unknown;
+        mcpServerName?: string;
+        mcpToolName?: string;
+        parentToolCallId?: string;
+      };
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral: true;
+      type: "tool.execution_partial_result";
+      data: {
+        toolCallId: string;
+        partialOutput: string;
+      };
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral: true;
+      type: "tool.execution_progress";
+      data: {
+        toolCallId: string;
+        progressMessage: string;
+      };
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral?: boolean;
+      type: "tool.execution_complete";
+      data: {
+        toolCallId: string;
+        success: boolean;
+        isUserRequested?: boolean;
+        result?: {
+          content: string;
+          detailedContent?: string;
+          contents?: (
+            | {
+                type: "text";
+                text: string;
+              }
+            | {
+                type: "terminal";
+                text: string;
+                exitCode?: number;
+                cwd?: string;
+              }
+            | {
+                type: "image";
+                data: string;
+                mimeType: string;
+              }
+            | {
+                type: "audio";
+                data: string;
+                mimeType: string;
+              }
+            | {
+                icons?: {
+                  src: string;
+                  mimeType?: string;
+                  sizes?: string[];
+                  theme?: "light" | "dark";
+                }[];
+                name: string;
+                title?: string;
+                uri: string;
+                description?: string;
+                mimeType?: string;
+                size?: number;
+                type: "resource_link";
+              }
+            | {
+                type: "resource";
+                resource:
+                  | {
+                      uri: string;
+                      mimeType?: string;
+                      text: string;
+                    }
+                  | {
+                      uri: string;
+                      mimeType?: string;
+                      blob: string;
+                    };
+              }
+          )[];
+        };
+        error?: {
+          message: string;
+          code?: string;
+        };
+        toolTelemetry?: {
+          [k: string]: unknown;
+        };
+        parentToolCallId?: string;
+      };
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral?: boolean;
+      type: "skill.invoked";
+      data: {
+        name: string;
+        path: string;
+        content: string;
+        allowedTools?: string[];
+      };
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral?: boolean;
+      type: "subagent.started";
+      data: {
+        toolCallId: string;
+        agentName: string;
+        agentDisplayName: string;
+        agentDescription: string;
+      };
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral?: boolean;
+      type: "subagent.completed";
+      data: {
+        toolCallId: string;
+        agentName: string;
+        agentDisplayName: string;
+      };
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral?: boolean;
+      type: "subagent.failed";
+      data: {
+        toolCallId: string;
+        agentName: string;
+        agentDisplayName: string;
+        error: string;
+      };
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral?: boolean;
+      type: "subagent.selected";
+      data: {
+        agentName: string;
+        agentDisplayName: string;
+        tools: string[] | null;
+      };
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral?: boolean;
+      type: "hook.start";
+      data: {
+        hookInvocationId: string;
+        hookType: string;
+        input?: unknown;
+      };
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral?: boolean;
+      type: "hook.end";
+      data: {
+        hookInvocationId: string;
+        hookType: string;
+        output?: unknown;
+        success: boolean;
+        error?: {
+          message: string;
+          stack?: string;
+        };
+      };
+    }
+  | {
+      id: string;
+      timestamp: string;
+      parentId: string | null;
+      ephemeral?: boolean;
+      type: "system.message";
+      data: {
+        content: string;
+        role: "system" | "developer";
+        name?: string;
+        metadata?: {
+          promptVersion?: string;
+          variables?: {
+            [k: string]: unknown;
+          };
+        };
+      };
+    };

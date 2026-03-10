@@ -18,6 +18,10 @@ import {
 } from "@paperclipai/adapter-utils/server-utils";
 import { isPiUnknownSessionError, parsePiJsonl } from "./parse.js";
 import { ensurePiModelConfiguredAndAvailable } from "./models.js";
+import { DEFAULT_PROVIDER, DEFAULT_MODEL } from "../model/llm.js";
+import { getApiKeyFromKeychain } from "../model/token-manager.js";
+
+const DEFAULT_PI_MODEL = `${DEFAULT_PROVIDER}/${DEFAULT_MODEL}`;
 
 const __moduleDir = path.dirname(fileURLToPath(import.meta.url));
 const PAPERCLIP_SKILLS_CANDIDATES = [
@@ -106,7 +110,7 @@ export async function execute(ctx: AdapterExecutionContext): Promise<AdapterExec
     "You are agent {{agent.id}} ({{agent.name}}). Continue your Paperclip work.",
   );
   const command = asString(config.command, "pi");
-  const model = asString(config.model, "").trim();
+  const model = asString(config.model, DEFAULT_PI_MODEL).trim();
   const thinking = asString(config.thinking, "").trim();
 
   // Parse model into provider and model id
@@ -186,6 +190,14 @@ export async function execute(ctx: AdapterExecutionContext): Promise<AdapterExec
   if (!hasExplicitApiKey && authToken) {
     env.PAPERCLIP_API_KEY = authToken;
   }
+
+  // Inject Anthropic API key from keychain if provider is anthropic and key not already set
+  if (provider === "anthropic" && !env.ANTHROPIC_API_KEY && !process.env.ANTHROPIC_API_KEY) {
+    const keychainApiKey = getApiKeyFromKeychain();
+    if (keychainApiKey) {
+      env.ANTHROPIC_API_KEY = keychainApiKey;
+    }
+  }
   
   const runtimeEnv = Object.fromEntries(
     Object.entries(ensurePathInEnv({ ...process.env, ...env })).filter(
@@ -194,13 +206,20 @@ export async function execute(ctx: AdapterExecutionContext): Promise<AdapterExec
   );
   await ensureCommandResolvable(command, cwd, runtimeEnv);
 
-  // Validate model is available before execution
-  await ensurePiModelConfiguredAndAvailable({
-    model,
-    command,
-    cwd,
-    env: runtimeEnv,
-  });
+  // Validate model is available before execution (non-fatal: let Pi report model errors)
+  try {
+    await ensurePiModelConfiguredAndAvailable({
+      model,
+      command,
+      cwd,
+      env: runtimeEnv,
+    });
+  } catch (err) {
+    await onLog(
+      "stderr",
+      `[paperclip] Warning: model pre-check failed (${err instanceof Error ? err.message : String(err)}); attempting run anyway.\n`,
+    );
+  }
 
   const timeoutSec = asNumber(config.timeoutSec, 0);
   const graceSec = asNumber(config.graceSec, 20);
